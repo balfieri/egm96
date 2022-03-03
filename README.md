@@ -22,11 +22,11 @@ Here's how to convert from GPS altitude to MSL:
  double gps_alt = <some GPS altitude>
  double msl_alt = gps_alt + gps96.getOffset( longitude, latitude );
 
-latitude must be between -90.0 .. 90.0 degrees.
+latitude must be between -90.0 .. 90.0 degrees (inclusive).
 
-longitude must be between 0.0 .. 360.0 degrees.
+longitude must be between -180.0 .. 180.0 degrees (inclusive). 
 
-This C++ implementation was obtained by converting the Javascript
+This C++ implementation was created by converting the Javascript
 found at https://github.com/jleppert/egm96.
 
 Refer to http://cddis.gsfc.nasa.gov/926/egm96/egm96.html for more

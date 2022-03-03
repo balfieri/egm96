@@ -151,7 +151,10 @@ bool EGM96::file_read( std::string file_path, char *& start, char *& end )
 
 double EGM96::getOffset( double latitude, double longitude ) 
 {
-    longitude = (longitude >= 0.0) ? longitude : (longitude + 360.0);
+    eassert( latitude >= -90.0 && latitude <= 90.0, "latitude must be between -90.0 .. 90.0 degrees" );
+    eassert( longitude >= -180.0 && longitude <= 180.0, "longitude must be between -180.0 .. 180.0 degrees" );
+
+    longitude = (longitude >= 0.0) ? longitude : (longitude + 360.0); // normalize to 0.0 .. 360.0
 
     uint32_t topRow;
     if ( latitude <= -90.0 ) {
@@ -171,7 +174,7 @@ double EGM96::getOffset( double latitude, double longitude )
         rightCol = leftCol + 1;
     }
 
-    uint32_t latTop = 90 - topRow * INTERVAL_DEGREE;
+    uint32_t latTop = 90.0 - topRow * INTERVAL_DEGREE;
     uint32_t lonLeft = leftCol * INTERVAL_DEGREE;
 
     int16_t ul = getPostOffset( topRow, leftCol );
