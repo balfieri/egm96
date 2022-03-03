@@ -72,7 +72,7 @@ private:
     double   INTERVAL_DEGREE;
 
     static inline void edie( std::string msg )          { std::cout << "ERROR: " << msg << "\n"; exit( 1 ); }
-    static inline void eassert( bool expr, std::string msg ) { if ( !expr ) edie( msg ); }
+    static inline void egmassert( bool expr, std::string msg ) { if ( !expr ) edie( msg ); }
 
     static inline double toDegree( double radians )     { return radians * (180.0/M_PI ); }
     static inline double fromDegree( double degrees )   { return degrees * (M_PI/180.0);  }
@@ -86,7 +86,7 @@ private:
     inline int16_t getPostOffset( uint32_t row, uint32_t col )
     {
         size_t k = row*NUM_COLS + col;
-        eassert( k < (data_len*2), "getPostOffset row,col outside range" );
+        egmassert( k < (data_len*2), "getPostOffset row,col outside range" );
         return readInt16BE( k*2 );
     }
 };
@@ -122,13 +122,13 @@ bool EGM96::file_read( std::string file_path, char *& start, char *& end )
     const char * fname = file_path.c_str();
     int fd = open( fname, O_RDONLY );
     if ( fd < 0 ) std::cout << "file_read() error reading " << file_path << ": " << strerror( errno ) << "\n";
-    eassert( fd >= 0, "could not open file " + file_path + " - open() error: " + strerror( errno ) );
+    egmassert( fd >= 0, "could not open file " + file_path + " - open() error: " + strerror( errno ) );
 
     struct stat file_stat;
     int status = fstat( fd, &file_stat );
     if ( status < 0 ) {
         close( fd );
-        eassert( 0, "could not stat file " + std::string(fname) + " - stat() error: " + strerror( errno ) );
+        egmassert( 0, "could not stat file " + std::string(fname) + " - stat() error: " + strerror( errno ) );
     }
     size_t size = file_stat.st_size;
 
@@ -136,13 +136,13 @@ bool EGM96::file_read( std::string file_path, char *& start, char *& end )
     start = aligned_alloc<char>( size );
     if ( start == nullptr ) {
         close( fd );
-        eassert( 0, "could not read file " + std::string(fname) + " - malloc() error: " + strerror( errno ) );
+        egmassert( 0, "could not read file " + std::string(fname) + " - malloc() error: " + strerror( errno ) );
     }
     end = start + size;
 
     if ( ::read( fd, start, size ) <= 0 ) {
         close( fd );
-        eassert( 0, "could not read() file " + std::string(fname) + " - read error: " + strerror( errno ) );
+        egmassert( 0, "could not read() file " + std::string(fname) + " - read error: " + strerror( errno ) );
     }
 
     close( fd );
@@ -151,8 +151,8 @@ bool EGM96::file_read( std::string file_path, char *& start, char *& end )
 
 double EGM96::getOffset( double latitude, double longitude ) 
 {
-    eassert( latitude >= -90.0 && latitude <= 90.0, "latitude must be between -90.0 .. 90.0 degrees" );
-    eassert( longitude >= -180.0 && longitude <= 180.0, "longitude must be between -180.0 .. 180.0 degrees" );
+    egmassert( latitude >= -90.0 && latitude <= 90.0, "latitude must be between -90.0 .. 90.0 degrees" );
+    egmassert( longitude >= -180.0 && longitude <= 180.0, "longitude must be between -180.0 .. 180.0 degrees" );
 
     longitude = (longitude >= 0.0) ? longitude : (longitude + 360.0); // normalize to 0.0 .. 360.0
 
